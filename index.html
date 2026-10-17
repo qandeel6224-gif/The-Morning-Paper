@@ -1,66 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Personal Morning Paper - NaSCon'26</title>
-
-    <!-- External PDF Generation Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-    <!-- Custom CSS Link -->
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Personal Morning Paper</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <!-- Main Content Wrapper -->
-    <main>
-        <h1>My Personal Morning Paper</h1>
-        <p class="subheading">Your interests, your news!</p>
+  <!-- Top bar -->
+  <header class="topbar" id="topbar" hidden>
+    <div class="brand">&#9672; Morning Paper</div>
+    <nav>
+      <button class="nav-btn active" data-view="edition">Today</button>
+      <button class="nav-btn" data-view="archive">Past papers</button>
+      <button class="nav-btn" id="btn-prefs">Interests</button>
+    </nav>
+  </header>
 
-        <hr>
+  <!-- ============ ONBOARDING ============ -->
+  <main id="view-onboarding" class="view" hidden>
+    <div class="onb-card">
+      <div class="onb-progress" id="onb-progress">
+        <span class="dot active"></span><span class="dot"></span><span class="dot"></span>
+      </div>
 
-        <!-- PAGE 1: TOPIC SELECTION ONBOARDING -->
-        <div id="choicePage" class="page">
-            <h2>Choose Your News Categories</h2>
-            <p>Select one or more topics you want to read about.</p>
-
-            <div class="topic-list">
-                <button class="topic" onclick="selectTopic(this, 'Technology')">Technology</button>
-                <button class="topic" onclick="selectTopic(this, 'Cybersecurity')">Cybersecurity</button>
-                <button class="topic" onclick="selectTopic(this, 'Artificial Intelligence')">Artificial Intelligence</button>
-                <button class="topic" onclick="selectTopic(this, 'World News')">World News</button>
-                <button class="topic" onclick="selectTopic(this, 'Business')">Business</button>
-                <button class="topic" onclick="selectTopic(this, 'Science')">Science</button>
-                <button class="topic" onclick="selectTopic(this, 'Health')">Health</button>
-                <button class="topic" onclick="selectTopic(this, 'Space')">Space & Astronomy</button>
-            </div>
-
-            <button class="btn-primary" onclick="showNews()">Show My News →</button>
+      <section class="onb-step" data-step="1">
+        <p class="eyebrow">Welcome</p>
+        <h1>Your own newspaper,<br>printed fresh every morning.</h1>
+        <p class="lede">Tell us what you care about and we'll gather the stories that matter to you from across the web into one paper. No more hopping between sites.</p>
+        <label class="field">
+          <span>What should we call you?</span>
+          <input id="onb-name" type="text" placeholder="e.g. Ayesha" maxlength="24" autocomplete="given-name">
+        </label>
+        <div class="onb-actions">
+          <button class="btn primary" id="onb-next-1">Continue</button>
         </div>
+      </section>
 
-        <!-- PAGE 2: PERSONALIZED MORNING EDITION -->
-        <div id="newsPage" class="page">
-            <div class="header-actions">
-                <h2>Your Personalized Morning Edition</h2>
-                <div>
-                    <button class="btn-primary" onclick="goBack()">← Change Choices</button>
-                    <button class="btn-primary btn-pdf" onclick="downloadPaperPDF()">📥 Download PDF</button>
-                </div>
-            </div>
-
-            <div id="newsContainer"></div>
+      <section class="onb-step" data-step="2" hidden>
+        <p class="eyebrow">Step 2 of 3</p>
+        <h1>Pick what you'd like to read.</h1>
+        <p class="lede">Choose at least 3 topics. The paper learns as you use it, so you can't get this wrong.</p>
+        <div class="chips" id="topic-chips"></div>
+        <p class="hint" id="topic-hint">Pick 3 or more</p>
+        <div class="onb-actions">
+          <button class="btn ghost" id="onb-back-2">Back</button>
+          <button class="btn primary" id="onb-next-2" disabled>Continue</button>
         </div>
-    </main>
+      </section>
 
-    <!-- FOOTER (Positioned outside <main> at the bottom) -->
-    <footer>
-        <p>My Personal Morning Paper - NaSCon'26</p>
-    </footer>
+      <section class="onb-step" data-step="3" hidden>
+        <p class="eyebrow">Step 3 of 3</p>
+        <h1>How big should your paper be?</h1>
+        <div class="depth-options" id="depth-options">
+          <label class="depth"><input type="radio" name="depth" value="brief"><div><strong>Brief</strong><span>About 10 stories, a 5 minute read</span></div></label>
+          <label class="depth"><input type="radio" name="depth" value="standard" checked><div><strong>Standard</strong><span>About 18 stories, a 10 minute read</span></div></label>
+          <label class="depth"><input type="radio" name="depth" value="deep"><div><strong>Full edition</strong><span>About 28 stories, take your time</span></div></label>
+        </div>
+        <div class="onb-actions">
+          <button class="btn ghost" id="onb-back-3">Back</button>
+          <button class="btn primary" id="onb-finish">Print my first paper</button>
+        </div>
+      </section>
+    </div>
+  </main>
 
-    <!-- Custom JavaScript Link -->
-    <script src="script.js"></script>
+  <!-- ============ EDITION ============ -->
+  <main id="view-edition" class="view" hidden>
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <button class="btn small ghost" id="btn-refresh">&#8635; Refresh edition</button>
+      </div>
+      <div class="toolbar-right">
+        <span class="status" id="status"></span>
+        <button class="btn small primary" id="btn-pdf">&#8681; Download PDF</button>
+      </div>
+    </div>
+
+    <div class="edition-layout">
+      <div class="paper-wrap">
+        <div id="loading" class="loading" hidden>
+          <div class="spinner"></div>
+          <p id="loading-text">Gathering your stories&hellip;</p>
+        </div>
+        <div id="error" class="error-box" hidden></div>
+        <article id="paper" class="paper" hidden></article>
+      </div>
+
+      <aside class="learn-panel" id="learn-panel" hidden>
+        <h3>What your paper has learned</h3>
+        <p class="small-note">Tap &#128077; on stories you like and &#10005; on ones you don't. Tomorrow's paper adapts.</p>
+        <div id="learn-bars"></div>
+        <h4>Words you keep engaging with</h4>
+        <div id="learn-words" class="word-cloud"></div>
+        <button class="btn small ghost danger" id="btn-reset-learning">Reset learning</button>
+      </aside>
+    </div>
+  </main>
+
+  <!-- ============ ARCHIVE ============ -->
+  <main id="view-archive" class="view" hidden>
+    <div class="archive-wrap">
+      <p class="eyebrow">Your collection</p>
+      <h1>Past papers</h1>
+      <div id="archive-list" class="archive-list"></div>
+    </div>
+  </main>
+
+  <!-- ============ INTERESTS MODAL ============ -->
+  <div class="modal" id="prefs-modal" hidden>
+    <div class="modal-card">
+      <h2>Your interests</h2>
+      <div class="chips" id="prefs-chips"></div>
+      <div class="onb-actions">
+        <button class="btn ghost" id="prefs-cancel">Cancel</button>
+        <button class="btn primary" id="prefs-save">Save and rebuild</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
 
