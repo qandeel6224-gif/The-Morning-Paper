@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Personal Morning Paper - NaSCon'26</title>
+
+    <!-- External PDF Generation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Custom CSS Link -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Main Content Wrapper -->
+    <main>
+        <h1>My Personal Morning Paper</h1>
+        <p class="subheading">Your interests, your news!</p>
+
+        <hr>
+
+        <!-- PAGE 1: TOPIC SELECTION ONBOARDING -->
+        <div id="choicePage" class="page">
+            <h2>Choose Your News Categories</h2>
+            <p>Select one or more topics you want to read about.</p>
+
+            <div class="topic-list">
+                <button class="topic" onclick="selectTopic(this, 'Technology')">Technology</button>
+                <button class="topic" onclick="selectTopic(this, 'Cybersecurity')">Cybersecurity</button>
+                <button class="topic" onclick="selectTopic(this, 'Artificial Intelligence')">Artificial Intelligence</button>
+                <button class="topic" onclick="selectTopic(this, 'World News')">World News</button>
+                <button class="topic" onclick="selectTopic(this, 'Business')">Business</button>
+                <button class="topic" onclick="selectTopic(this, 'Science')">Science</button>
+                <button class="topic" onclick="selectTopic(this, 'Health')">Health</button>
+                <button class="topic" onclick="selectTopic(this, 'Space')">Space & Astronomy</button>
+            </div>
+
+            <button class="btn-primary" onclick="showNews()">Show My News →</button>
+        </div>
+
+        <!-- PAGE 2: PERSONALIZED MORNING EDITION -->
+        <div id="newsPage" class="page">
+            <div class="header-actions">
+                <h2>Your Personalized Morning Edition</h2>
+                <div>
+                    <button class="btn-primary" onclick="goBack()">← Change Choices</button>
+                    <button class="btn-primary btn-pdf" onclick="downloadPaperPDF()">📥 Download PDF</button>
+                </div>
+            </div>
+
+            <div id="newsContainer"></div>
+        </div>
+    </main>
+
+    <!-- FOOTER (Positioned outside <main> at the bottom) -->
+    <footer>
+        <p>My Personal Morning Paper - NaSCon'26</p>
+    </footer>
+
+    <!-- Custom JavaScript Link -->
+    <script src="script.js"></script>
+</body>
+</html>
+
